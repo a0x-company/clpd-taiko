@@ -283,4 +283,5 @@ contract CLPD is ERC20, Ownable {
         burnFrom(address(this), amount);
         emit TokensBridge(msg.sender, amount, chain);
     }
+    
 }

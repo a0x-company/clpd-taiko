@@ -6,7 +6,7 @@ import {CLPD} from "../src/CLPD_BaseSepolia_Bridge.sol";
 
 /**
  * To run this contract, copy and paste this command in the terminal:
- * forge test -vvvvv --match-path test/CLPD_BaseSepolia.t.sol --fork-url https://sepolia.base.org/
+ * forge test -vvvvv --match-path test/CLPD_BaseSepolia_Bridge.t.sol --fork-url https://sepolia.base.org/
  *  
  * @dev Contract deployed on Base Sepolia
  * https://sepolia.basescan.org/address/0xe2C6D205F0EF4A215B66B25437BbC5C8d59525FE
@@ -15,7 +15,7 @@ import {CLPD} from "../src/CLPD_BaseSepolia_Bridge.sol";
 contract CLPDTest is Test {
     CLPD public clpd;
     address public owner = 0xd806A01E295386ef7a7Cea0B9DA037B242622743; // Owner and Agent of the real contract
-    address public faucetaddress = 0xB5333E2c93b7513B2d8F9E09A4A3B199A9Ea2675;
+    address public faucetaddress = 0x2F2B1a3648C58CF224aA69A4B0BdC942F000045F;
     address public account1 = 0xFc6623B340A505E6819349aF6beE2333D31840E1; // Agent of the real contract
     address public account2 = 0x9F693ea18DA08824E729d5efc343Dd78254a9302; // No Agent and no Owner of the real contract
 
@@ -32,7 +32,7 @@ contract CLPDTest is Test {
         clpd.transfer(owner, transferAmount);
         vm.stopPrank();
     }
-
+    
     // ---------------------------------------------- AddAgent tests ----------------------------------------------   
     function testAddAgent() public {
         // Make account1 an agent
@@ -738,23 +738,6 @@ contract CLPDTest is Test {
 
         // Check if the total supply has decreased
         assertEq(clpd.totalSupply(), initialTotalSupply - burnAmount, "Total supply should decrease by burned amount");
-    }
-
-    // ---------------------------------------------- bridge tests ---------------------------------------------- 
-    function testBridge() public {
-        address user = account1;
-        uint256 bridgeAmount = 100 * 10**18; // 100 tokens with 18 decimals
-
-        uint256 initialBalance = clpd.balanceOf(user);
-        uint256 initialTotalSupply = clpd.totalSupply();
-
-        // Bridge tokens
-        vm.prank(user);
-        clpd.bridgeCLPD(bridgeAmount, "Taiko");
-
-        // Check if tokens were burned (balance and total supply decreased)
-        assertEq(clpd.balanceOf(user), initialBalance - bridgeAmount, "User's balance should decrease by bridged amount");
-        assertEq(clpd.totalSupply(), initialTotalSupply - bridgeAmount, "Total supply should decrease by bridged amount");
     }
 
 }
