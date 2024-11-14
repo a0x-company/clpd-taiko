@@ -6,139 +6,136 @@ This section describes the main smart contracts located in the project's `src` f
 
 ### 1. CLPD_BaseMainnet.sol
 This smart contract is designed for deployment on the Base mainnet. It implements CLPD's core functionality, including:
-- ERC20 token management with custom mint and burn functions.
-- Integration with Chainlink Functions to obtain external data.
-- Role system with owner and authorized agents.
-- Security mechanisms such as account freezing and blacklisting.
-- Custom events for tracking transactions and state changes.
+- ERC20 token management with custom mint and burn functions
+- Role system with owner and authorized agents
+- Security mechanisms such as account freezing and blacklisting
+- Custom events for tracking transactions and state changes
+- Integration with message passing protocols for secure cross-chain communication
+- Locking and unlocking mechanisms for bridged tokens
 
-### 2. CLPD_BaseSepolia.sol
-A variant of the previous contract optimized for the Base Sepolia testnet. Additional features include:
-- Specific configurations for the test environment.
-- Enhanced debugging and logging functions.
-- Adjustable parameters to simulate different market scenarios.
-- Compatibility with automated testing tools.
+### 2. CLPD_BaseSepolia_Bridge.sol
+A variant of the previous contract optimized for the Base Sepolia testnet. Features include:
+- Enhanced debugging and logging functions
+- Bridge functionality for testing cross-chain transfers with Taiko testnet
+- Role-based access control for agents and owner
+- Account freezing and blacklisting capabilities
+- Test environments for message verification and validation
+- Bridge event monitoring and tracking system
 
-### 3. oracleTokenPriceCLPD.sol
-Specialized oracle contract for providing CLPD price data:
-- Interface with Uniswap V3 to obtain real-time liquidity and price data.
-- Implementation of advanced mathematical logic for precise price calculations.
-- Efficient update mechanisms and storage of historical data.
-- Security functions to prevent price manipulations.
+### 3. CLPD__Taiko_Helka_Bridge.sol
+Contract designed for deployment on the Taiko Helka testnet:
+- Bridge functionality for Taiko-Base token transfers
+- ERC20 token implementation with custom features
+- Role management for agents and owner
+- Security features like account freezing
+- Cross-chain message passing implementation
+- Token locking mechanism on source chain
+- Token minting/burning on destination chain
+- Bridge state verification and synchronization
 
 ### 4. swap_InvestLiquidity_CLPD.sol
 Advanced contract for CLPD-related DeFi operations:
-- Full integration with the Uniswap V3 protocol for swaps and liquidity management.
-- Functions to add, remove, and increase liquidity positions.
-- Implementation of automated investment strategies.
-- Slippage management and protection against impermanent losses.
-- Fee collection and distribution mechanisms.
+- Full integration with the Aerodrome protocol for swaps and liquidity management
+- Volatile and stable pool support for different trading pairs
+- Functions to add, remove, and increase liquidity positions
+- Implementation of automated investment strategies
+- Slippage management and protection against impermanent losses
+- Fee collection and distribution mechanisms
+- Gauge staking and reward claiming functionality
+- Support for Aerodrome's voting escrow system
 
 ### Technologies Used
-- Solidity: Programming language for smart contracts.
-- Foundry: Development and testing toolkit.
-- Uniswap: Protocol used in swap_InvestLiquidity_CLPD.sol for exchange and liquidity operations.
-- Chainlink functions: Used for CLPD_BaseMainnet.sol and CLPD_BaseSepolia.sol
-- OpenZeppelin: Used for CLPD_BaseMainnet.sol and CLPD_BaseSepolia.sol
-- UniswapV3MathLib: Used in swap_InvestLiquidity_CLPD.sol for mathematical calculations in exchange operations.
-- Base: Ethereum layer 2 network where contracts are deployed.
-- ERC20: Token standard used to implement CLPD.
-- Uniswap V3 Pool: Used in oracleTokenPriceCLPD.sol to obtain price data.
-- ISwapRouter02: Uniswap V3 interface used in swap_InvestLiquidity_CLPD.sol for exchange operations.
-- INonfungiblePositionManager: Uniswap V3 interface used in swap_InvestLiquidity_CLPD.sol to manage liquidity positions.
+- Solidity: Programming language for smart contracts
+- Foundry: Development and testing toolkit
+- Aerodrome: DEX protocol used for exchange and liquidity operations
+- OpenZeppelin: Used for token standards and security features
+- Base: Ethereum L2 network for mainnet and testnet deployments
+- Taiko: L2 network supporting cross-chain bridge functionality
+- ERC20: Token standard implementation
+- Cross-chain messaging protocols for bridge operations
+- Aerodrome interfaces for swap and liquidity operations
 
 ### Contract Compilation
 
 To compile the contracts, follow these steps:
 
-1. Make sure you have Foundry installed on your system.
-2. Open a terminal and navigate to the project directory.
+1. Make sure you have Foundry installed on your system
+2. Open a terminal and navigate to the project directory
 3. Enter the contracts directory:
-
    ```
    cd contracts
    ```
-
 4. Run the Forge compilation command:
-
    ```
    forge build
    ```
 
-   This command compiles all the smart contracts in the project using Forge, a Foundry tool. When executed, Forge will analyze and compile all Solidity files (.sol) in the project directory and its subdirectories, generating the necessary compilation artifacts for deployment and testing.
-
 ## Tests
 
-The `test` folder contains test files for the contracts. These tests are designed to verify the correct functioning of the contracts and their functions.
+The `test` folder contains test files for the contracts. These tests verify the correct functioning of all contract features.
 
 ### Main Test Files:
 
-1. `CLPD_BaseMainnet.t.sol`: Tests for the CLPD contract on Base mainnet.
-2. `CLPD_BaseSepolia.t.sol`: Tests for the CLPD contract on Base Sepolia testnet.
-3. `oracleTokenPriceCLPD.t.sol`: Tests for the price oracle contract.
-4. `swap_InvestLiquidity_CLPD.t.sol`: Tests for the swap and liquidity investment contract.
+1. `CLPD_BaseMainnet.t.sol`: Tests for Base mainnet deployment and functionality
+2. `CLPD_BaseSepolia_Bridge.t.sol`: Tests for Base Sepolia deployment and testnet bridge operations
+3. `CLPD__Taiko_Helka_Bridge.t.sol`: Tests for Taiko Helka deployment and cross-chain transfers
+4. `swap_InvestLiquidity_CLPD.t.sol`: Tests for Aerodrome swap and liquidity features
 
 ### Running Tests:
 
-To run these tests, use the following commands in the terminal:
+Execute these commands to run the tests:
 
-1. To run CLPD tests on Base mainnet:
+1. Base mainnet tests:
    ```
    forge test -vvvv --match-path test/CLPD_BaseMainnet.t.sol --fork-url https://mainnet.base.org/
    ```
 
-2. To run CLPD tests on Base Sepolia testnet:
+2. Base Sepolia tests:
    ```
-   forge test -vvvv --match-path test/CLPD_BaseSepolia.t.sol --fork-url https://sepolia.base.org/
-   ```
-
-3. To run price oracle tests:
-   ```
-   forge test -vvvv --match-path test/oracleTokenPriceCLPD.t.sol --fork-url https://mainnet.base.org/
+   forge test -vvvv --match-path test/CLPD_BaseSepolia_Bridge.t.sol --fork-url https://sepolia.base.org/
    ```
 
-4. To run swap and liquidity investment tests:
+3. Taiko Helka tests:
+   ```
+   forge test -vvvv --match-path test/CLPD__Taiko_Helka_Bridge.t.sol --fork-url https://hekla.taikoscan.io/
+   ```
+
+4. Swap and liquidity tests:
    ```
    forge test -vvvv --match-path test/swap_InvestLiquidity_CLPD.t.sol --fork-url https://mainnet.base.org/
    ```
 
-These commands will run the specific tests for each contract, using Forge to simulate the corresponding network conditions. The `-vvvv` option provides a detailed output level to assist in debugging if necessary.
+## Deployment Scripts
 
-## Deployment and Interaction Scripts
-
-The `script` folder contains various script files that facilitate the deployment and interaction with the contracts. These scripts are designed to be used with Forge, Foundry's command-line tool.
+The `script` folder contains deployment scripts for each contract. These scripts use Forge for deployment.
 
 ### Main Script Files:
 
-1. `DeployCLPD.s.sol`: Script to deploy the CLPD contract.
-2. `DeployOracleTokenPriceCLPD.s.sol`: Script to deploy the price oracle contract.
-3. `DeploySwapInvestLiquidity.s.sol`: Script to deploy the swap and liquidity investment contract.
-4. `InteractWithCLPD.s.sol`: Script to interact with specific functions of the CLPD contract.
+1. `DeployCLPD_BaseMainnet.s.sol`: Base mainnet deployment
+2. `DeployCLPD_BaseSepolia.s.sol`: Base Sepolia deployment with testnet bridge setup
+3. `DeployCLPD_TaikoHelka.s.sol`: Taiko Helka deployment with cross-chain functionality
+4. `DeploySwapInvestLiquidity.s.sol`: Aerodrome integration deployment
 
 ### Running Scripts:
 
-To run these scripts, use the following commands in the terminal:
+Deploy using these commands:
 
-To run the deployment scripts, use the following commands:
-
-1. CLPD on Base Mainnet:
+1. Base Mainnet:
    ```
-   forge script scripts/CLPD_BaseMainnet.s.sol --rpc-url https://mainnet.base.org/ --broadcast
+   forge script scripts/DeployCLPD_BaseMainnet.s.sol --rpc-url https://mainnet.base.org/ --broadcast
    ```
 
-2. CLPD on Base Sepolia:
+2. Base Sepolia:
    ```
-   forge script scripts/CLPD_BaseSepolia.s.sol --rpc-url https://sepolia.base.org/ --broadcast
-   ```
-
-3. CLPD price oracle:
-   ```
-   forge script scripts/oracleTokenPriceCLPD.s.sol --rpc-url https://mainnet.base.org/ --broadcast
+   forge script scripts/DeployCLPD_BaseSepolia_Bridge.s.sol --rpc-url https://sepolia.base.org/ --broadcast
    ```
 
-4. CLPD swap and liquidity investment:
+3. Taiko Helka:
    ```
-   forge script scripts/swap_InvestLiquidity_CLPD.s.sol --rpc-url https://mainnet.base.org/ --broadcast
+   forge script scripts/DeployCLPD__Taiko_Helka_Bridge.s.sol --rpc-url https://hekla.taikoscan.io/ --broadcast
    ```
 
-These commands will run the corresponding scripts on the specified networks and broadcast the transactions.
+4. Swap contract:
+   ```
+   forge script scripts/DeploySwapInvestLiquidity.s.sol --rpc-url https://mainnet.base.org/ --broadcast
+   ```
