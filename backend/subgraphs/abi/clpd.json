@@ -303,10 +303,10 @@
         "type": "uint256"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
+        "indexed": false,
+        "internalType": "string",
+        "name": "chain",
+        "type": "string"
       }
     ],
     "name": "TokensBridge",
@@ -469,7 +469,8 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "string", "name": "chain", "type": "string" }
     ],
     "name": "bridgeCLPD",
     "outputs": [],

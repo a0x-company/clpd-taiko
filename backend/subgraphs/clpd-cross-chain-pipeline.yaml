@@ -1,0 +1,114 @@
+name: clpd-crosschain
+apiVersion: 3
+sources:
+  tokens_bridge_source:
+    type: subgraph_entity
+    name: tokens_bridge
+    subgraphs:
+      - name: CLPD-base-sepolia
+        version: 1.0.0
+      - name: CLPD-taiko-hekla
+        version: 1.0.0
+
+  tokens_minted_source:
+    type: subgraph_entity
+    name: tokens_minted
+    subgraphs:
+      - name: CLPD-base-sepolia
+        version: 1.0.0
+      - name: CLPD-taiko-hekla
+        version: 1.0.0
+
+  tokens_burned_source:
+    type: subgraph_entity
+    name: tokens_burned
+    subgraphs:
+      - name: CLPD-base-sepolia
+        version: 1.0.0
+      - name: CLPD-taiko-hekla
+        version: 1.0.0
+
+  batch_mint_completed_source:
+    type: subgraph_entity
+    name: batch_mint_completed
+    subgraphs:
+      - name: CLPD-base-sepolia
+        version: 1.0.0
+      - name: CLPD-taiko-hekla
+        version: 1.0.0
+
+  redeem_executed_source:
+    type: subgraph_entity
+    name: redeem_executed
+    subgraphs:
+      - name: CLPD-base-sepolia
+        version: 1.0.0
+      - name: CLPD-taiko-hekla
+        version: 1.0.0
+
+transforms:
+  combined_bridge_events:
+    sql: |
+      SELECT * FROM tokens_bridge_source
+    type: sql
+    primary_key: id
+
+  combined_mint_events:
+    sql: |
+      SELECT * FROM tokens_minted_source
+    type: sql
+    primary_key: id
+
+  combined_burn_events:
+    sql: |
+      SELECT * FROM tokens_burned_source
+    type: sql
+    primary_key: id
+
+  combined_batch_mint_events:
+    sql: |
+      SELECT * FROM batch_mint_completed_source
+    type: sql
+    primary_key: id
+
+  combined_redeem_events:
+    sql: |
+      SELECT * FROM redeem_executed_source
+    type: sql
+    primary_key: id
+
+sinks:
+  postgres_combined_bridge_events:
+    type: postgres
+    table: combined_bridge_events
+    schema: public
+    secret_name: CLPD_NEON_DB
+    from: combined_bridge_events
+
+  postgres_combined_mint_events:
+    type: postgres
+    table: combined_mint_events
+    schema: public
+    secret_name: CLPD_NEON_DB
+    from: combined_mint_events
+
+  postgres_combined_burn_events:
+    type: postgres
+    table: combined_burn_events
+    schema: public
+    secret_name: CLPD_NEON_DB
+    from: combined_burn_events
+
+  postgres_combined_batch_mint_events:
+    type: postgres
+    table: combined_batch_mint_events
+    schema: public
+    secret_name: CLPD_NEON_DB
+    from: combined_batch_mint_events
+
+  postgres_combined_redeem_events:
+    type: postgres
+    table: combined_redeem_events
+    schema: public
+    secret_name: CLPD_NEON_DB
+    from: combined_redeem_events
