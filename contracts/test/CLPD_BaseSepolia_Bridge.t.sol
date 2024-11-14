@@ -9,7 +9,7 @@ import {CLPD} from "../src/CLPD_BaseSepolia_Bridge.sol";
  * forge test -vvvvv --match-path test/CLPD_BaseSepolia.t.sol --fork-url https://sepolia.base.org/
  *  
  * @dev Contract deployed on Base Sepolia
- * https://sepolia.basescan.org/address/0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A
+ * https://sepolia.basescan.org/address/0xe2C6D205F0EF4A215B66B25437BbC5C8d59525FE
 */
 
 contract CLPDTest is Test {
@@ -20,7 +20,7 @@ contract CLPDTest is Test {
     address public account2 = 0x9F693ea18DA08824E729d5efc343Dd78254a9302; // No Agent and no Owner of the real contract
 
     function setUp() public {
-        clpd = CLPD(0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A);
+        clpd = CLPD(0xe2C6D205F0EF4A215B66B25437BbC5C8d59525FE);
         
         // Transfer 10,000 tokens (with 18 decimals) to account1 and account2
         uint256 transferAmount = 10_000 * 10**18; // 10,000 tokens
@@ -750,7 +750,7 @@ contract CLPDTest is Test {
 
         // Bridge tokens
         vm.prank(user);
-        clpd.bridgeCLPD(bridgeAmount);
+        clpd.bridgeCLPD(bridgeAmount, "Taiko");
 
         // Check if tokens were burned (balance and total supply decreased)
         assertEq(clpd.balanceOf(user), initialBalance - bridgeAmount, "User's balance should decrease by bridged amount");

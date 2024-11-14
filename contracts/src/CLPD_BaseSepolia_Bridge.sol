@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @dev Contract deployed on Base Sepolia
  * @notice You can view the deployed contract at:
- * https://sepolia.basescan.org/address/0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A
+ * https://sepolia.basescan.org/address/0xe2C6D205F0EF4A215B66B25437BbC5C8d59525FE
 */
 
 // Main contract for CLPD that inherits from ERC20 and Ownable
@@ -66,7 +66,7 @@ contract CLPD is ERC20, Ownable {
     event SetsubscriptionID();
     event SetReceiver();
     event TokenDetailsUpdated(string newName, string newSymbol);
-    event TokensBridge(address indexed user, uint256 amount, address indexed receiver);
+    event TokensBridge(address indexed user, uint256 amount, string chain);
 
     // Initialize contract with default token name and symbol
     constructor() ERC20(_tokenName, _tokenSymbol) Ownable(msg.sender) {
@@ -277,10 +277,10 @@ contract CLPD is ERC20, Ownable {
     }
 
     // Bridge tokens to another chain by transferring to receiver and burning
-    function bridgeCLPD(uint256 amount) external {
+    function bridgeCLPD(uint256 amount, string memory chain) external {
         require(balanceOf(msg.sender) >= amount, "Not enough tokens to bridge");
         _transfer(msg.sender, address(this), amount);
         burnFrom(address(this), amount);
-        emit TokensBridge(msg.sender, amount, receiver);
+        emit TokensBridge(msg.sender, amount, chain);
     }
 }

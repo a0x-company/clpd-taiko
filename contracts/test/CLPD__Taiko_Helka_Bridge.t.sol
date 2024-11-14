@@ -9,7 +9,7 @@ import {CLPD} from "../src/CLPD__Taiko_Helka_Bridge.sol";
  * forge test -vvvvv --match-path test/CLPD__Taiko_Helka_Bridge.t.sol --fork-url https://hekla.taikoscan.io/
  *  
  * @dev Contract deployed on Taiko Helka
- * https://hekla.taikoscan.io/address/0x380a3Af810aEC334c5CcDFa7Faa9c42Ba9559B8e
+ * https://hekla.taikoscan.io/address/0x53c04d5FC9F8d5c4f3C45B4da6617868ECEaF636
 */
 
 contract CLPDTest is Test {
@@ -20,7 +20,7 @@ contract CLPDTest is Test {
     address public account2 = 0x9F693ea18DA08824E729d5efc343Dd78254a9302; // No Agent and no Owner of the real contract
 
     function setUp() public {
-        clpd = CLPD(0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A);
+        clpd = CLPD(0x53c04d5FC9F8d5c4f3C45B4da6617868ECEaF636);
         
         // Transfer 10,000 tokens (with 18 decimals) to account1 and account2
         uint256 transferAmount = 10_000 * 10**18; // 10,000 tokens
@@ -750,7 +750,7 @@ contract CLPDTest is Test {
 
         // Bridge tokens
         vm.prank(user);
-        clpd.bridgeCLPD(bridgeAmount);
+        clpd.bridgeCLPD(bridgeAmount, "Base");
 
         // Check if tokens were burned (balance and total supply decreased)
         assertEq(clpd.balanceOf(user), initialBalance - bridgeAmount, "User's balance should decrease by bridged amount");
