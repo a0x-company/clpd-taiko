@@ -10,11 +10,15 @@ const API_URL = process.env.API_URL;
 const API_KEY = process.env.API_KEY;
 
 export async function POST(request: Request) {
-  const { address, withdrawAmount, phoneNumber } = await request.json();
+  const { address, withdrawAmount, contactName } = await request.json();
   const idToken = await getSessionToken();
 
-  if (!idToken) {
-    return NextResponse.json({ error: "idToken is required" }, { status: 400 });
+  if (!idToken || !withdrawAmount) {
+    return NextResponse.json({ error: "idToken and withdrawAmount are required" }, { status: 400 });
+  }
+
+  if (!address && !contactName) {
+    return NextResponse.json({ error: "address or contactName are required" }, { status: 400 });
   }
 
   try {
@@ -22,7 +26,7 @@ export async function POST(request: Request) {
       `${API_URL}/wallet/transfer-token`,
       {
         address: address,
-        phoneNumber: phoneNumber,
+        contactName,
         withdrawAmount: Number(withdrawAmount),
         tokenSymbol: "CLPD",
       },

@@ -1,38 +1,43 @@
 // react
-import { useState } from "react";
+import { useId, useState } from "react";
 
 // translations
 import { useTranslations } from "next-intl";
 
 // components
+import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Button } from "../ui/button";
 
 // icons
-import UserIcon from "../icons/UserIcon";
 import PhoneIcon from "../icons/PhoneIcon";
+import UserIcon from "../icons/UserIcon";
 
 // utils
 import { cn } from "@/lib/utils";
 
 // axios
-import axios from "axios";
+import useContacts, { Contact } from "@/hooks/useContacts";
 import { LoadingSpinner } from "../ui/spinner";
-import useContacts from "@/hooks/useContacts";
+
+// utils
 
 const DialogAddContact = ({
   open,
   setOpen,
+  handleAddContactSuccess,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  handleAddContactSuccess: (contact: Contact) => void;
 }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const t = useTranslations("profile.contactsList");
+
+  const id = useId();
 
   const { addContact } = useContacts();
 
@@ -46,9 +51,8 @@ const DialogAddContact = ({
         name,
         phoneNumber,
       });
-      console.log(response);
       if (response?.status === 200) {
-        setOpen(false);
+        handleAddContactSuccess({ id, name, phoneNumber });
       }
     } catch (error) {
       console.error(error);
