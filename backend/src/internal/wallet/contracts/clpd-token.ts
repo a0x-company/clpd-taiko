@@ -5,13 +5,14 @@ import { Log } from 'ethers';
 
 export class CLPDTokenContract {
   private contract: Contract;
-
+  address: string;
   constructor(address: string, contractService: ContractService) {
     console.log('🔧 Inicializando CLPDTokenContract con la dirección:', address);
     this.contract = new Contract(address, CLPD_TOKEN_ABI, contractService.getProvider());
     console.log('🔧 CLPDTokenContract inicializado correctamente.');
+    this.address = address;
   }
-
+  
   async getEvents(eventName: string, fromBlock: number, toBlock: number) {
     console.log(`🔄 Intentando obtener eventos: ${eventName} desde el bloque ${fromBlock} hasta el ${toBlock}`);
     if (!this.contract.filters[eventName]) {
@@ -30,5 +31,19 @@ export class CLPDTokenContract {
     const totalSupply = await this.contract.totalSupply();
     console.log('✅ totalSupply obtenido:', totalSupply.toString());
     return totalSupply.toString();
+  }
+
+  async getBalance(address: string): Promise<string> {
+    console.log(`🔄 Obteniendo balance de ${address}`);
+    const balance = await this.contract.balanceOf(address);
+    console.log(`✅ Balance obtenido: ${balance.toString()}`);
+    return balance.toString();
+  }
+
+  async getCanMint(): Promise<boolean> {
+    console.log('🔄 Obteniendo estado de canMint');
+    const canMint = await this.contract.canMint();
+    console.log('✅ Estado de canMint obtenido:', canMint);
+    return canMint;
   }
 }
