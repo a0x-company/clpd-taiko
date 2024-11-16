@@ -1,6 +1,5 @@
 import 'module-alias/register';
-
-import { ethers } from 'ethers';
+import { ethers} from "ethers";
 import { Firestore } from '@google-cloud/firestore';
 import { Storage } from "@google-cloud/storage";
 import { DepositService, DepositStatus } from '@internal/deposits';

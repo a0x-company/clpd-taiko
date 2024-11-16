@@ -7,6 +7,7 @@ import { getVaultBalanceHistoryHandler } from "./get-vault-balance-history-handl
 import { getVaultTestDataHandler } from "./get-vault-test-data-handler";
 import { VaultBalanceStorage } from "@internal/bank-scrap/storage";
 import { DepositService } from "@internal/deposits";
+import { getNewReserveDataHandler } from "./get-new-reserve-data-handler";
 
 interface VaultGetter {
   getVaultBalance(): Promise<number>;
@@ -25,7 +26,8 @@ export function setupVaultRoutes(router: Express, ctx: VaultContext) {
   vaultRouter.get("/balance/storage", getVaultBalanceHandler(ctx));
   vaultRouter.get("/balance/history", getVaultBalanceHistoryHandler(ctx));
   vaultRouter.get("/balance/chains", getVaultTestDataHandler(ctx));
-  
+  vaultRouter.get("/reserve-data", getNewReserveDataHandler(ctx));
+
   router.use("/vault", vaultRouter);
   console.log("🚀 Vault routes set up");
 }
