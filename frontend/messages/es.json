@@ -367,6 +367,8 @@
     "date": "Fecha",
     "amount": "Cantidad",
     "noEvents": "No hay eventos.",
-    "eventType": "Tipo de evento"
+    "eventType": "Tipo de evento",
+    "bridge": "Bridge",
+    "events": "Eventos en Blockchain"
   }
 }
