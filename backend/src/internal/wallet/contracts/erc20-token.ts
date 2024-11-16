@@ -59,4 +59,13 @@ export class ERC20TokenContract {
     const decimals = await this.getDecimals();
     return parseUnits(amount, decimals);
   }
+
+  async getTotalSupply(): Promise<bigint> {
+    try {
+      return await this.contract.totalSupply();
+    } catch (error: any) {
+      console.error(`Error getting total supply for ${this.symbol || this.address}:`, error);
+      throw new Error(`Failed to get total supply: ${error.message}`);
+    }
+  }
 }

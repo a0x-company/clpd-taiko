@@ -30,7 +30,9 @@ export class ContractService {
   constructor(private readonly rpcUrl: string) {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
   }
-
+  getProvider(): ethers.JsonRpcProvider {
+    return this.provider;
+  }
   async executeOperation(operation: Operation): Promise<TransactionResult> {
     try {
       const result = await operation.execute();

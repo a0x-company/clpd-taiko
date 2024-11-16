@@ -54,7 +54,7 @@
     "@pkg": "dist/pkg"
   },
   "dependencies": {
-    "typescript": "^5.6.2",
+    "@apollo/client": "^3.11.10",
     "@bot-whatsapp/bot": "^0.1.38",
     "@bot-whatsapp/provider-baileys": "^0.1.0-alpha.18",
     "@google-cloud/bigquery": "^7.9.1",
@@ -72,6 +72,7 @@
     "elliptic": "^6.5.7",
     "ethers": "^6.13.2",
     "express": "^4.21.0",
+    "graphql": "^16.9.0",
     "js-sha3": "^0.9.3",
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
@@ -87,6 +88,7 @@
     "react-email": "^3.0.1",
     "resend": "^4.0.0",
     "sharp": "^0.33.5",
+    "typescript": "^5.6.2",
     "viem": "^2.21.7"
   }
 }
