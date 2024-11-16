@@ -91,7 +91,6 @@ const createSteps = ({
   type,
   addressDestination,
   setType,
-  setBankInfo,
   setAddressDestination,
   handleAmountChange,
   bankInfo,
@@ -104,7 +103,6 @@ const createSteps = ({
   bankList,
   clpdBalanceFormatted,
   contacts,
-  loadingContacts,
   handleSelectContact,
   selectedContact,
 }: CreateStepsProps) => [
@@ -651,15 +649,12 @@ const Withdraw: React.FC = () => {
       });
 
       if (response.status === 200) {
-        // Manejar respuesta exitosa
         console.log("Transferencia iniciada:", response.data);
         setCurrentStep(2);
         refetchCLPDBalance();
-        // Actualizar el estado o navegar a la siguiente pantalla
       }
     } catch (error) {
       console.error("Error al iniciar la transferencia:", error);
-      // Manejar el error (mostrar mensaje al usuario, etc.)
     } finally {
       setLoading(false);
     }
@@ -669,20 +664,17 @@ const Withdraw: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.post("/api/transfer", {
-        phoneNumber: selectedContact?.phoneNumber,
+        contactName: selectedContact?.name,
         withdrawAmount: withdrawAmount,
       });
 
       if (response.status === 200) {
-        // Manejar respuesta exitosa
         console.log("Transferencia iniciada:", response.data);
         setCurrentStep(2);
         refetchCLPDBalance();
-        // Actualizar el estado o navegar a la siguiente pantalla
       }
     } catch (error) {
       console.error("Error al iniciar la transferencia:", error);
-      // Manejar el error (mostrar mensaje al usuario, etc.)
     } finally {
       setLoading(false);
     }

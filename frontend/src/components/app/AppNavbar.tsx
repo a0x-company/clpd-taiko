@@ -23,12 +23,12 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 // ui
-import { LucideMenu } from "lucide-react";
+import { LucideMenu, SendIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetTrigger } from "../ui/sheet";
 
 import { Button } from "../ui/button";
 
-type NavOption = "profile" | "deposit" | "withdraw" | "invest" | "change";
+type NavOption = "profile" | "deposit" | "withdraw" | "invest" | "change" | "bridge";
 
 const getTabColor = (option: NavOption, selectedOption: NavOption) => {
   return selectedOption === option ? "white" : "black";
@@ -59,6 +59,20 @@ const tabs: { href: string; label: NavOption; icon: (color: string) => React.Rea
     href: "/app?tab=change",
     label: "change",
     icon: (color) => <ChangeIcon color={color} />,
+  },
+  {
+    href: "/app?tab=bridge",
+    label: "bridge",
+    icon: (color) => (
+      <div
+        className={cn(
+          "w-5 h-5 rounded-md flex items-center justify-center",
+          color === "white" ? "bg-white" : "bg-black"
+        )}
+      >
+        <SendIcon color={color === "white" ? "black" : "white"} className="w-4 h-4" />
+      </div>
+    ),
   },
 ];
 

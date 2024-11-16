@@ -30,6 +30,13 @@ const Contacts = ({ contacts, loading }: ContactsProps) => {
     setOpen(true);
   };
 
+  const handleAddContactSuccess = (contact: Contact) => {
+    if (contacts) {
+      contacts.push(contact);
+    }
+    setOpen(false);
+  };
+
   return (
     <Card className="flex flex-col w-full bg-white border-2 border-black shadow-brutalist overflow-hidden rounded-xl p-6 gap-3 h-full">
       {loading ? (
@@ -51,7 +58,11 @@ const Contacts = ({ contacts, loading }: ContactsProps) => {
           <ContactsFooter handleOpen={handleOpen} />
         </div>
       )}
-      <DialogAddContact open={open} setOpen={setOpen} />
+      <DialogAddContact
+        open={open}
+        setOpen={setOpen}
+        handleAddContactSuccess={handleAddContactSuccess}
+      />
     </Card>
   );
 };

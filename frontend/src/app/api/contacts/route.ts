@@ -21,13 +21,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("[POST][/api/contacts]");
+  console.log("[POST][/api/users/contact]");
   const { name, phoneNumber } = await req.json();
   console.log(name, phoneNumber);
-  const idToken = getSessionToken();
+  const idToken = await getSessionToken();
   try {
     const response = await axios.post(
-      `${API_URL}/contacts`,
+      `${API_URL}/users/contact`,
       { name, phoneNumber },
       {
         headers: {
@@ -37,8 +37,9 @@ export async function POST(req: NextRequest) {
       }
     );
     console.log("response", response);
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(response.data, { status: 200 });
   } catch (error) {
+    console.log("error", error);
     return NextResponse.json({ error: "Error adding contact" }, { status: 500 });
   }
 }

@@ -34,12 +34,26 @@ export const addresses: {
     positionManageAddress: "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1",
     factoryAddress: "0x0000000000000000000000000000000000000000",
     CLPD: {
-      address: "0x0000000000000000000000000000000000000000",
+      address: "0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A",
       decimals: 18,
     },
     USDC: {
       address: "0xcB0f68Cb1E6F4466F6970De9a3a70489Ee7D3a7A", // ERC20 Test
       decimals: 18,
+    },
+  },
+  taikoHekla: {
+    investment: "0x0000000000000000000000000000000000000000",
+    poolUsdcClpdAddress: "0x0000000000000000000000000000000000000000",
+    positionManageAddress: "0x0000000000000000000000000000000000000000",
+    factoryAddress: "0x0000000000000000000000000000000000000000",
+    CLPD: {
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: 18,
+    },
+    USDC: {
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: 6,
     },
   },
 };
