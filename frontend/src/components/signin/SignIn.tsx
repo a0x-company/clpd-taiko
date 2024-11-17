@@ -314,7 +314,7 @@ const SignIn = () => {
                   id="phoneNumber"
                   name="phoneNumber"
                   value={phoneNumber}
-                  className="bg-transparent text-xl font-helvetica outline-none p-0 pt-2 pl-10 text-brand-blue rounded-none border-none peer transition-all duration-300"
+                  className="bg-transparent text-xl font-helvetica outline-none p-0 pt-2 text-brand-blue rounded-none border-none peer transition-all duration-300"
                   onChange={onChangePhoneNumber}
                 />
                 {/* <span
