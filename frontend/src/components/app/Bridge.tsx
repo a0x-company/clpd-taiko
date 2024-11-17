@@ -33,6 +33,7 @@ import { baseSepolia, taikoHekla } from "viem/chains";
 // hooks
 import { useAccount } from "wagmi";
 import { useCLPDBalance } from "@/hooks/useCLPDBalance";
+import { zeroAddress } from "viem";
 
 interface CreateStepsProps {
   t: (key: string) => string;
@@ -263,9 +264,9 @@ const Bridge: React.FC = () => {
   const [errorFields, setErrorFields] = useState<string[]>([]);
 
   const { user } = useUserStore();
+  const userAddress = user?.address || zeroAddress
 
-  const { address: userAddress } = useAccount();
-  const { clpdBalanceFormatted, refetch: refetchCLPDBalance } = useCLPDBalance({
+   const { clpdBalanceFormatted, refetch: refetchCLPDBalance } = useCLPDBalance({
     address: userAddress,
     chainId: baseSepolia.id,
     _chainName: "baseSepolia",
