@@ -48,7 +48,7 @@ export const addresses: {
     positionManageAddress: "0x0000000000000000000000000000000000000000",
     factoryAddress: "0x0000000000000000000000000000000000000000",
     CLPD: {
-      address: "0x0000000000000000000000000000000000000000",
+      address: "0x380a3Af810aEC334c5CcDFa7Faa9c42Ba9559B8e",
       decimals: 18,
     },
     USDC: {

@@ -354,5 +354,20 @@
       "contactsSearch": "Search contact",
       "shareText": "Create your account in CLPD and enjoy the benefits of the digital peso of the state."
     }
+  },
+  "aboutClpd": {
+    "header": "About CLPD",
+    "description1": "CLPD is the first and only Chilean peso stablecoin backed 100% by Chilean pesos in a national bank account.",
+    "description2": "With CLPD, you can make instant, national and international payments, secure and low-cost. In addition, it is programmable through smart contracts, which opens endless possibilities for its use and distribution.",
+    "mint": "Mint",
+    "burn": "Burn",
+    "user": "User",
+    "chain": "Chain",
+    "date": "Date",
+    "amount": "Amount",
+    "noEvents": "No events.",
+    "eventType": "Event Type",
+    "bridge": "Bridge",
+    "events": "Blockchain Events"
   }
 }
