@@ -134,7 +134,7 @@ const createSteps = ({
               width={22}
               height={22}
               className={cn(
-                "rounded-full overflow-hidden object-cover md:absolute group-hover:translate-x-0 transition-all duration-300",
+                "overflow-hidden object-cover md:absolute group-hover:translate-x-0 transition-all duration-300",
                 networkIn === "baseSepolia"
                   ? "right-[calc(50%-36px)] group-hover:-right-7"
                   : "left-[calc(50%-38px)] group-hover:-left-7"
