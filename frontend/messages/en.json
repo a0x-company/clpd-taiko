@@ -371,5 +371,24 @@
     "eventType": "Event Type",
     "bridge": "Bridge",
     "events": "Blockchain Events"
+  },
+  "bridge": {
+    "createBridgeOrderBase": "Send to Base",
+    "createBridgeOrderTaiko": "Send to Taiko",
+    "availableBalance": "Available balance in",
+    "send": "Send",
+    "amountPlaceholder": "100",
+    "getCLPDTesnet": "Get CLPD Testnet",
+    "max": "Max",
+    "errorFields": {
+      "amount": "The amount entered is invalid"
+    },
+    "receive": "Receive",
+    "bridgeSuccess": "Bridge success",
+    "bridgePending": "Bridge in progress",
+    "stepSuccessBridgeDescription": "The transfer has been completed successfully.",
+    "stepPendingBridgeDescription": "The transfer is in progress.",
+    "bridge": "Bridge",
+    "submit": "Submit"
   }
 }
