@@ -276,19 +276,9 @@ const Bridge: React.FC = () => {
     _chainName: "taikoHekla",
   });
 
-  useEffect(() => {
-    console.log("Bridge Component Balance Values:");
-    console.log("Base Balance:", clpdBalanceFormatted);
-    console.log("Taiko Balance:", clpdBalanceFormattedTaiko);
-    console.log("Loading Base:", isLoadingBase);
-    console.log("Loading Taiko:", isLoadingTaiko);
-  }, [clpdBalanceFormatted, clpdBalanceFormattedTaiko]);
-
   const [status, setStatus] = useState<"pending" | "success">("pending");
 
   const [loadingGetCLPDTesnet, setLoadingGetCLPDTesnet] = useState<boolean>(false);
-
-  console.log("clpdBalanceFormatted", clpdBalanceFormatted);
 
   const handleGetCLPDTesnet = async () => {
     setLoadingGetCLPDTesnet(true);

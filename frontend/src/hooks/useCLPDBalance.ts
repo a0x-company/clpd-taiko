@@ -22,14 +22,6 @@ export const useCLPDBalance = ({
   _chainName?: string;
 }) => {
   const chainName = _chainName ?? selectedChain.name.toLowerCase();
-  
-  // Añadir useEffect para debugging
-  useEffect(() => {
-    console.log("useCLPDBalance Hook - Initial values:");
-    console.log("Address:", address);
-    console.log("ChainName:", chainName);
-    console.log("ChainId:", chainId);
-  }, [address, chainName, chainId]);
 
   const clpdBalance = useReadContracts({
     allowFailure: false,
@@ -50,28 +42,20 @@ export const useCLPDBalance = ({
     ],
   });
 
-  // Añadir useEffect para monitorear cambios en clpdBalance
-  useEffect(() => {
-    console.log("CLPD Balance Data:", clpdBalance.data);
-    console.log("CLPD Balance Status:", clpdBalance.status);
-    if (clpdBalance.error) {
-      console.error("CLPD Balance Error:", clpdBalance.error);
-    }
-  }, [clpdBalance.data, clpdBalance.status, clpdBalance.error]);
-
   const clpdBalanceFormatted = useMemo(() => {
-    const formattedBalance = !clpdBalance.data || !clpdBalance.data[0] 
-      ? "0" 
-      : Number(formatUnits(clpdBalance.data?.[0]! as bigint, 18) || 0).toFixed(2);
-    
+    const formattedBalance =
+      !clpdBalance.data || !clpdBalance.data[0]
+        ? "0"
+        : Number(formatUnits(clpdBalance.data?.[0]! as bigint, 18) || 0).toFixed(2);
+
     console.log("Formatted Balance:", formattedBalance);
     return formattedBalance;
   }, [clpdBalance.data]);
 
-  return { 
-    clpdBalanceFormatted, 
+  return {
+    clpdBalanceFormatted,
     refetch: clpdBalance.refetch,
     isLoading: clpdBalance.isLoading,
-    error: clpdBalance.error 
+    error: clpdBalance.error,
   };
 };
