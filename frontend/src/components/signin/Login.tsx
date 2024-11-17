@@ -336,7 +336,7 @@ const Login = () => {
             {step === "verify" && (
               <>
                 {t("verifyDescription")}
-                <span className="font-bold"> +56{phoneNumber}</span>. {t("verifyDescription2")}
+                <span className="font-bold">{phoneNumber}</span>. {t("verifyDescription2")}
               </>
             )}
           </CardDescription>
@@ -363,14 +363,14 @@ const Login = () => {
                   className="bg-transparent text-xl font-helvetica outline-none p-0 pt-2 pl-10 text-brand-blue rounded-none border-none peer transition-all duration-300"
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
-                <span
+                {/* <span
                   className={cn(
                     "text-xl opacity-0 peer-focus:opacity-100 absolute left-4 pt-2.5 transition-all duration-300",
                     phoneNumber.length > 0 && "opacity-100"
                   )}
                 >
                   +56
-                </span>
+                </span> */}
                 <div
                   className={cn(
                     "absolute flex items-center gap-2 top-1/2 -translate-y-1/2 transition-all duration-300",
