@@ -22,7 +22,8 @@ export const useCLPDBalance = ({
   _chainName?: string;
 }) => {
   const chainName = _chainName ?? selectedChain.name.toLowerCase();
-
+  console.log("Fetching balance for address:", address);
+  console.log("chainName", chainName);
   /* CLPD Balance */
   const clpdBalance = useReadContracts({
     allowFailure: false,
@@ -42,7 +43,7 @@ export const useCLPDBalance = ({
       },
     ],
   });
-
+  console.log("clpdBalance", clpdBalance);
   const clpdBalanceFormatted = useMemo(() => {
     if (!clpdBalance.data || !clpdBalance.data[0]) return "0";
     return Number(formatUnits(clpdBalance.data?.[0]! as bigint, 18) || 0).toFixed(2);
