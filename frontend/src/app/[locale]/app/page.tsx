@@ -5,6 +5,7 @@ import Deposit from "@/components/app/Deposit";
 import Invest from "@/components/app/Invest";
 import Profile from "@/components/app/Profile";
 import Withdraw from "@/components/app/Withdraw";
+import Bridge from "@/components/app/Bridge";
 
 export default function App({
   searchParams,
@@ -19,6 +20,7 @@ export default function App({
       {searchParams.tab === "invest" && <Invest />}
       {searchParams.tab === "change" && <Change />}
       {searchParams.tab === "profile" && <Profile />}
+      {searchParams.tab === "bridge" && <Bridge />}
     </main>
   );
 }
