@@ -9,6 +9,7 @@ export interface TransactionResult {
   success: boolean;
   error?: Error;
   receipt?: any;
+  logs?: any[];
 }
 
 export interface TransactionOptions {

@@ -7,6 +7,7 @@ import { WalletService } from '@internal/wallet/service';
 import { UserService, UserDataStorage } from '@internal/users';
 import { config } from '@internal';
 import axios from 'axios';
+import { CHAIN_CONFIGS } from '@internal/wallet/config';
 
 if (!config.PROJECT_ID || !config.RPC_URL) {
   throw new Error("❌ Required environment variables are missing");
@@ -18,7 +19,7 @@ const firestore = new Firestore({
   databaseId: config.DATABASE_ENV
 });
 
-const walletService = new WalletService(config.RPC_URL);
+const walletService = new WalletService(CHAIN_CONFIGS);
 const whatsappService = new WhatsappService(false);
 const userService = new UserService(new UserDataStorage(firestore));
 const messageQueue = new MessageQueue(firestore);

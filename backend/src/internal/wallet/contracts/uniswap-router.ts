@@ -10,7 +10,7 @@ export class UniswapRouterContract {
     { jsonRpcProvider }: ContractService
   ) {
     this.contract = new ethers.Contract(
-      address,
+      address ? address : "0x0000000000000000000000000000000000000000",
       AERO_SWAP_CLPD_ABI,
       jsonRpcProvider
     );

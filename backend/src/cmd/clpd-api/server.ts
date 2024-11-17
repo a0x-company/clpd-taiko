@@ -2,6 +2,7 @@
 import { Firestore } from "@google-cloud/firestore";
 import { Storage } from "@google-cloud/storage";
 import { http, config, users, deposits, wallet } from "@internal";
+import { CHAIN_CONFIGS } from "@internal/wallet/config";
 import { WalletService } from "@internal/wallet/service";
 
 config.validateRequiredEnvs();
@@ -21,7 +22,7 @@ const depositService = new deposits.DepositService(
   config.RESEND_API_KEY as string
 );
 const tokenManager = new users.JwtTokenManager();
-const BaseWalletService = new WalletService(config.RPC_URL as string);
+const BaseWalletService = new WalletService(CHAIN_CONFIGS);
 
 // http
 const server = http.createServer();

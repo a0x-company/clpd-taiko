@@ -10,7 +10,7 @@ export class UniswapV3LiquidityPoolContract {
     private readonly contractService: ContractService
   ) {
     this.contract = new ethers.Contract(
-      address,
+      address ? address : "0x0000000000000000000000000000000000000000",
       POOL_CONTRACT_ABI,
       contractService.jsonRpcProvider
     );

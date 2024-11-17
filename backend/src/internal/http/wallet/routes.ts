@@ -13,6 +13,7 @@ import { getPositionsHandler } from "./get-positionts-handler";
 
 // middleware
 import { AuthMiddleware } from "@internal/http/middlewares/authentication";
+import { bridgeTokenHandler } from "./bridge-token-handler";
 // import { PasskeyAuthMiddleware } from "@internal/http/middlewares/passkey-authentication";
 
 // types
@@ -44,6 +45,11 @@ export function setupWalletRoutes(router: Express, ctx: WalletContext) {
     getPositionsHandler(ctx)
   );
 
+  walletRouter.post(
+    "/bridge",
+    AuthMiddleware(ctx.userService, tokenManager),
+    bridgeTokenHandler(ctx)
+  );
   router.use("/wallet", walletRouter);
   console.log("✅ Rutas de wallet configuradas");
 }

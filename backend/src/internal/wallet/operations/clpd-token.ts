@@ -80,3 +80,29 @@ export class VerifyValueAPIOperation implements Operation {
       return `Mint tokens for users: ${this.params.pendingUsers.join(', ')}`;
     }
   }
+
+  export class BurnTokensOperation implements Operation {
+    constructor(
+      private readonly contractService: ContractService,
+      private readonly clpdContract: CLPDTokenContract,
+      private readonly params: {
+        amount: bigint;
+        userAddress: string;
+        signer: ethers.Wallet;
+      }
+    ) {}
+  
+    async execute(): Promise<TransactionResult> {
+      return this.contractService.callContract({
+        contractAddress: this.clpdContract.address,
+        abi: CLPD_TOKEN_ABI,
+        method: 'burnTokens',
+        methodParams: [this.params.amount, this.params.userAddress],
+        signer: this.params.signer
+      });
+    }
+  
+    getDescription(): string {
+      return `Burn ${this.params.amount} tokens from user: ${this.params.userAddress}`;
+    }
+  }

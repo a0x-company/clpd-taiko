@@ -13,7 +13,7 @@ export class ERC20TokenContract {
     { jsonRpcProvider }: ContractService,
   ) {
     this.contract = new ethers.Contract(
-      address,
+      address ? address : "0x0000000000000000000000000000000000000000",
       ERC20_CONTRACT_ABI,
       jsonRpcProvider
     );

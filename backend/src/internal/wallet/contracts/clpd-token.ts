@@ -8,10 +8,12 @@ export class CLPDTokenContract {
   address: string;
   constructor(address: string, contractService: ContractService) {
     console.log('🔧 Inicializando CLPDTokenContract con la dirección:', address);
-    this.contract = new Contract(address, CLPD_TOKEN_ABI, contractService.getProvider());
+    this.contract = new Contract(address ? address : "0x0000000000000000000000000000000000000000", CLPD_TOKEN_ABI, contractService.getProvider());
     console.log('🔧 CLPDTokenContract inicializado correctamente.');
     this.address = address;
   }
+  
+
   
   async getEvents(eventName: string, fromBlock: number, toBlock: number) {
     console.log(`🔄 Intentando obtener eventos: ${eventName} desde el bloque ${fromBlock} hasta el ${toBlock}`);
