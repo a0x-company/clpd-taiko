@@ -33,11 +33,10 @@ export class WalletOperationMediator {
       clpdToken: CLPDTokenContract;
     };
   }>) {
-    console.log("🔧 Initializing chain mediators.");
+    console.log("🔧 Inicializando mediadores");
     this.chainMediators = new Map();
     
     Object.entries(chainConfigs).forEach(([chainId, config]) => {
-      console.log(`📈 Setting up mediator for chain: ${chainId}`);
       const mediator = {
         ...config,
         agentSigner: new ethers.Wallet(
@@ -46,18 +45,15 @@ export class WalletOperationMediator {
         )
       };
       this.chainMediators.set(chainId as ChainId, mediator);
-      console.log(`🔗 Mediator configured for chain: ${chainId}`);
     });
   }
 
   private getChainServices(chain: ChainId = "base") {
-    console.log(`🔍 Retrieving services for chain: ${chain}`);
     const chainServices = this.chainMediators.get(chain);
     if (!chainServices) {
-      console.error(`❌ Chain ${chain} is not configured.`);
+      console.error(`❌ Chain ${chain} no configurada`);
       throw new Error(`Chain ${chain} not configured`);
     }
-    console.log(`✅ Services retrieved for chain: ${chain}`);
     return chainServices;
   }
 
@@ -68,19 +64,15 @@ export class WalletOperationMediator {
     signer: ethers.Wallet;
     chain?: ChainId;
   }): Promise<TransactionResult> {
-    console.log("🔄 Starting swap execution with approval.");
+    console.log("🔄 Iniciando swap con aprobación");
     const { contractService, contracts } = this.getChainServices(params.chain);
-    console.log("🔗 Retrieved contract services and contracts.");
 
-    console.log("🔍 Checking current allowance.");
     const currentAllowance = await params.tokenIn.getAllowance(
       params.signer.address,
       contracts.router.address
     );
-    console.log(`📊 Current allowance: ${currentAllowance}`);
 
     if (currentAllowance < params.amount) {
-      console.log("📝 Approving token for router.");
       const approvalOp = new TokenApprovalOperation(
         contractService,
         params.tokenIn,
@@ -90,18 +82,13 @@ export class WalletOperationMediator {
           signer: params.signer
         }
       );
-      console.log("🛠️ Executing approval operation.");
       const approvalResult = await contractService.executeOperation(approvalOp);
-      console.log(`✅ Approval result: ${approvalResult.success}`);
       if (!approvalResult.success) {
-        console.error("❌ Approval failed.");
+        console.error("❌ Falló la aprobación");
         throw new Error("Approval failed");
       }
-    } else {
-      console.log("✅ No additional approval required.");
     }
 
-    console.log("🔄 Creating swap operation.");
     const swapOp = new TokenSwapOperation(
       contractService,
       contracts.router,
@@ -112,9 +99,8 @@ export class WalletOperationMediator {
         signer: params.signer
       }
     );
-    console.log("🛠️ Executing swap operation.");
     const swapResult = await contractService.executeOperation(swapOp);
-    console.log(`✅ Swap executed successfully: ${swapResult.success}`);
+    console.log(`✅ Swap ejecutado: ${swapResult.success}`);
     return swapResult;
   }
 
@@ -125,19 +111,15 @@ export class WalletOperationMediator {
     isClpd: boolean;
     chain?: ChainId;
   }): Promise<TransactionResult> {
-    console.log("💧 Starting liquidity addition with approval.");
+    console.log("💧 Iniciando adición de liquidez");
     const { contractService, contracts } = this.getChainServices(params.chain);
-    console.log("🔗 Retrieved contract services and contracts.");
 
-    console.log("🔍 Checking current allowance.");
     const currentAllowance = await params.token.getAllowance(
       params.signer.address,
       BASE_ADDRESS.AERO_SWAP
     );
-    console.log(`📊 Current allowance: ${currentAllowance}`);
 
     if (currentAllowance < params.amount) {
-      console.log("📝 Approving token for AERO_SWAP.");
       const approvalOp = new TokenApprovalOperation(
         contractService,
         params.token,
@@ -147,18 +129,13 @@ export class WalletOperationMediator {
           signer: params.signer
         }
       );
-      console.log("🛠️ Executing approval operation.");
       const approvalResult = await contractService.executeOperation(approvalOp);
-      console.log(`✅ Approval result: ${approvalResult.success}`);
       if (!approvalResult.success) {
-        console.error("❌ Approval failed.");
+        console.error("❌ Falló la aprobación");
         throw new Error("Approval failed");
       }
-    } else {
-      console.log("✅ No additional approval required.");
     }
 
-    console.log("💧 Creating liquidity addition operation.");
     const liquidityOp = new LiquidityAddOperation(
       contractService,
       contracts.pool,
@@ -168,9 +145,8 @@ export class WalletOperationMediator {
         isClpd: params.isClpd
       }
     );
-    console.log("🛠️ Executing liquidity addition operation.");
     const liquidityResult = await contractService.executeOperation(liquidityOp);
-    console.log(`✅ Liquidity addition executed successfully: ${liquidityResult.success}`);
+    console.log(`✅ Liquidez añadida: ${liquidityResult.success}`);
     return liquidityResult;
   }
 
@@ -180,25 +156,18 @@ export class WalletOperationMediator {
     targetChain: ChainId;
     userSigner: ethers.Wallet;
   }): Promise<TransactionResult> {
-    console.log("🌉 Starting cross-chain bridge operation.");
+    console.log("🌉 Iniciando operación de bridge");
     try {
-      console.log("🔗 Retrieving services for source chain.");
       const sourceServices = this.getChainServices(params.sourceChain);
-      console.log("🔗 Retrieving services for target chain.");
       const targetServices = this.getChainServices(params.targetChain);
 
-      console.log("📊 Fetching initial total supplies.");
       const [initialSourceSupply, initialTargetSupply] = await Promise.all([
         sourceServices.contracts.clpdToken.getTotalSupply(),
         targetServices.contracts.clpdToken.getTotalSupply()
       ]);
-      console.log(`📈 Initial supply on source: ${initialSourceSupply}`);
-      console.log(`📈 Initial supply on target: ${initialTargetSupply}`);
 
       const totalBankBalance = BigInt(initialSourceSupply) + BigInt(initialTargetSupply);
-      console.log(`💰 Total bank balance: ${totalBankBalance}`);
 
-      console.log("🔥 Creating burn operation.");
       const burnOp = new BridgeCLPDOperation(
         sourceServices.contractService,
         sourceServices.contracts.clpdToken,
@@ -208,23 +177,17 @@ export class WalletOperationMediator {
           signer: params.userSigner
         }
       );
-      console.log("🛠️ Executing burn operation.");
       const burnResult = await sourceServices.contractService.executeOperation(burnOp);
-      console.log(`✅ Burn operation executed: ${burnResult.success}`);
+      console.log(`🔥 Burn ejecutado: ${burnResult.success}`);
       if (!burnResult.success) throw new Error("Burn operation failed");
 
-      console.log("📊 Fetching total supplies after burn.");
       const [sourceTotalSupply, targetTotalSupply] = await Promise.all([
         sourceServices.contracts.clpd.getTotalSupply(),
         targetServices.contracts.clpd.getTotalSupply()
       ]);
-      console.log(`📈 Total supply on source after burn: ${sourceTotalSupply}`);
-      console.log(`📈 Total supply on target after burn: ${targetTotalSupply}`);
 
       const totalSupplyAllChains = BigInt(sourceTotalSupply) + BigInt(targetTotalSupply);
-      console.log(`📈 Total supply across all chains: ${totalSupplyAllChains}`);
 
-      console.log("🔍 Creating verification operations for source and target.");
       const sourceVerifyOp = new VerifyValueAPIOperation(
         sourceServices.contractService,
         sourceServices.contracts.clpdToken,
@@ -245,20 +208,16 @@ export class WalletOperationMediator {
         }
       );
 
-      console.log("🛠️ Executing verification operations.");
       const [sourceVerifyResult, targetVerifyResult] = await Promise.all([
         sourceServices.contractService.executeOperation(sourceVerifyOp),
         targetServices.contractService.executeOperation(targetVerifyOp)
       ]);
-      console.log(`✅ Verification on source: ${sourceVerifyResult.success}`);
-      console.log(`✅ Verification on target: ${targetVerifyResult.success}`);
 
       if (!sourceVerifyResult.success || !targetVerifyResult.success) {
-        console.error("❌ Verification operations failed after burn.");
+        console.error("❌ Falló la verificación después del burn");
         throw new Error("Verify operations failed after burn");
       }
 
-      console.log("🪙 Creating mint operation.");
       const mintOp = new MintTokensOperation(
         targetServices.contractService,
         targetServices.contracts.clpdToken,
@@ -268,23 +227,17 @@ export class WalletOperationMediator {
           agentSigner: targetServices.agentSigner
         }
       );
-      console.log("🛠️ Executing mint operation.");
       const mintResult = await targetServices.contractService.executeOperation(mintOp);
-      console.log(`✅ Mint operation executed: ${mintResult.success}`);
+      console.log(`🪙 Mint ejecutado: ${mintResult.success}`);
       if (!mintResult.success) throw new Error("Mint operation failed");
 
-      console.log("📊 Fetching final total supplies.");
       const [finalSourceTotalSupply, finalTargetTotalSupply] = await Promise.all([
         sourceServices.contracts.clpd.getTotalSupply(),
         targetServices.contracts.clpd.getTotalSupply()
       ]);
-      console.log(`📈 Final total supply on source: ${finalSourceTotalSupply}`);
-      console.log(`📈 Final total supply on target: ${finalTargetTotalSupply}`);
 
       const finalTotalSupplyAllChains = BigInt(finalSourceTotalSupply) + BigInt(finalTargetTotalSupply);
-      console.log(`📈 Final total supply across all chains: ${finalTotalSupplyAllChains}`);
 
-      console.log("🔍 Creating final verification operations for source and target.");
       const [finalSourceVerifyResult, finalTargetVerifyResult] = await Promise.all([
         sourceServices.contractService.executeOperation(
           new VerifyValueAPIOperation(
@@ -309,15 +262,13 @@ export class WalletOperationMediator {
           )
         )
       ]);
-      console.log(`✅ Final verification on source: ${finalSourceVerifyResult.success}`);
-      console.log(`✅ Final verification on target: ${finalTargetVerifyResult.success}`);
 
       if (!finalSourceVerifyResult.success || !finalTargetVerifyResult.success) {
-        console.error("❌ Final verification operations failed after mint.");
+        console.error("❌ Falló la verificación final");
         throw new Error("Final verify operations failed after mint");
       }
 
-      console.log("✅ Cross-chain bridge operation completed successfully.");
+      console.log("✅ Bridge completado exitosamente");
       return {
         success: true,
         hash: burnResult.hash,
@@ -331,7 +282,7 @@ export class WalletOperationMediator {
         ]
       };
     } catch (error: any) {
-      console.error('❌ Error executing cross-chain bridge operation:', error);
+      console.error('❌ Error en operación de bridge:', error);
       return { success: false, hash: '', logs: [] };
     }
   }

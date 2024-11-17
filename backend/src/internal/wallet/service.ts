@@ -28,13 +28,12 @@ export class WalletService {
     this.chainContracts = new Map();
     this.cryptoService = new CryptoService();
 
-    console.log("🔧 Initializing services and contracts for each chain.");
+    console.log("🔧 Inicializando servicios para cada cadena");
 
     Object.entries(chainConfigs).forEach(([chainId, config]) => {
-      console.log(`📈 Configuring chain: ${chainId}`);
+      console.log(`📈 Configurando chain: ${chainId}`);
       const contractService = new ContractService(config.rpcUrl);
       this.contractServices.set(chainId as ChainId, contractService);
-      console.log(`🔗 Contract service created for ${chainId}: ${config.rpcUrl}`);
 
       const contracts = {
         clpd: new ERC20TokenContract(config.addresses.CLPD.address, contractService),
@@ -43,12 +42,10 @@ export class WalletService {
         router: new UniswapRouterContract(config.addresses.AERO_SWAP || '', contractService),
         clpdToken: new CLPDTokenContract(config.addresses.CLPD.address, contractService)
       };
-      console.log(`📄 Contracts instantiated for ${chainId}.`);
+      console.log(`📄 Contratos instanciados para ${chainId}`);
 
       this.chainContracts.set(chainId as ChainId, contracts);
     });
-
-    console.log("🔗 Setting up mediators for all chains.");
 
     const mediatorConfigs = {} as Record<ChainId, {
       contractService: ContractService;
@@ -70,32 +67,26 @@ export class WalletService {
         contractService,
         contracts
       };
-      console.log(`🛠️ Mediator configuration added for ${chain}.`);
     });
 
     const mediator = new WalletOperationMediator(mediatorConfigs);
-    console.log("🔗 Single mediator created for all chains.");
+    console.log("🔗 Mediador creado para todas las cadenas");
 
     Object.keys(chainConfigs).forEach((chainId) => {
       this.mediators.set(chainId as ChainId, mediator);
-      console.log(`🔗 Mediator assigned to chain ${chainId}.`);
     });
-
-    console.log("✅ All services and mediators have been configured successfully.");
   }
 
   private getChainServices(chain: ChainId = "base") {
-    console.log(`🔍 Retrieving services for chain: ${chain}`);
     const contracts = this.chainContracts.get(chain);
     const mediator = this.mediators.get(chain);
     const contractService = this.contractServices.get(chain);
 
     if (!contracts || !mediator || !contractService) {
-      console.error(`❌ The chain ${chain} is not configured correctly.`);
+      console.error(`❌ La cadena ${chain} no está configurada correctamente`);
       throw new Error(`Chain ${chain} not configured`);
     }
 
-    console.log(`✅ Services retrieved for chain: ${chain}`);
     return { contracts, mediator, contractService };
   }
 
@@ -104,20 +95,18 @@ export class WalletService {
     tokenSymbol: "CLPD" | "USDC",
     chain: ChainId = "base"
   ): Promise<number> {
-    console.log(`🔍 Requesting balance for token ${tokenSymbol} on chain ${chain} for user ${user.address}.`);
+    console.log(`🔍 Consultando balance de ${tokenSymbol} para ${user.address}`);
     if (!user.address) {
-      console.error("❌ User address is undefined.");
       throw new Error("User address is undefined");
     }
 
     const { contracts } = this.getChainServices(chain);
     const token = contracts[tokenSymbol.toLowerCase()];
     const balance = await token.getBalance(user.address);
-    console.log(`📊 Raw balance obtained: ${balance}`);
+    console.log(`📊 Balance obtenido: ${balance}`);
 
     const decimals = tokenSymbol === "CLPD" ? 18 : 6;
     const formattedBalance = formatUnits(balance, decimals);
-    console.log("💰 Token balance in user wallet:", formattedBalance);
     return Number(formattedBalance);
   }
 
@@ -128,30 +117,21 @@ export class WalletService {
     withdrawAmount: number,
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`🔄 Initiating transfer of ${withdrawAmount} ${tokenSymbol} from ${user.address} to ${address} on chain ${chain}.`);
+    console.log(`🔄 Iniciando transferencia de ${withdrawAmount} ${tokenSymbol}`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, contractService } = this.getChainServices(chain);
     const token = contracts[tokenSymbol.toLowerCase()];
     const tokenBalance = await token.getBalance(user.address);
-    console.log(`📊 Available balance for transfer: ${formatUnits(tokenBalance, 18)}`);
 
     if (tokenBalance < parseUnits(withdrawAmount.toString(), 18)) {
-      console.error(`❌ Insufficient ${tokenSymbol} balance: available ${formatUnits(tokenBalance, 18)}`);
       throw new Error(`Insufficient ${tokenSymbol} balance: available ${formatUnits(tokenBalance, 18)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const operation = new TokenTransferOperation(
       contractService,
@@ -162,10 +142,9 @@ export class WalletService {
         signer
       }
     );
-    console.log("🛠️ Token transfer operation created.");
 
     const result = await contractService.executeOperation(operation);
-    console.log(`✅ Transfer executed with hash: ${result.hash}`);
+    console.log(`✅ Transferencia ejecutada: ${result.hash}`);
     return result.hash;
   }
 
@@ -175,39 +154,25 @@ export class WalletService {
     fromToken: "CLPD" | "USDC",
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`🔁 Initiating swap of ${amount} ${fromToken} for user ${user.address} on chain ${chain}.`);
+    console.log(`🔄 Iniciando swap de ${amount} ${fromToken}`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, mediator, contractService } = this.getChainServices(chain);
     const tokenIn = contracts[fromToken.toLowerCase()];
-    console.log(`🔗 Input token: ${fromToken}`);
-
     const toToken: "CLPD" | "USDC" = fromToken === "CLPD" ? "USDC" : "CLPD";
     const tokenOut = contracts[toToken.toLowerCase()];
-    console.log(`🔄 Inferred output token: ${toToken}`);
 
     const decimals = fromToken === "CLPD" ? 18 : 6;
-    console.log(`⚖️ Decimals used for ${fromToken}: ${decimals}`);
-
     const balance = await tokenIn.getBalance(user.address);
-    console.log(`📊 Available balance of ${fromToken}: ${formatUnits(balance, decimals)}`);
 
     if (balance < parseUnits(amount.toString(), decimals)) {
-      console.error(`❌ Insufficient ${fromToken} balance: available ${formatUnits(balance, decimals)}`);
       throw new Error(`Insufficient ${fromToken} balance: available ${formatUnits(balance, decimals)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const result = await mediator.executeSwapWithApproval({
       tokenIn,
@@ -215,13 +180,12 @@ export class WalletService {
       amount: parseUnits(amount.toString(), decimals),
       signer
     });
-    console.log(`✅ Swap executed with hash: ${result.hash}`);
 
     if (!result.success) {
-      console.error("❌ The swap has failed.");
       throw new Error("Swap failed");
     }
 
+    console.log(`✅ Swap completado: ${result.hash}`);
     return result.hash;
   }
 
@@ -230,29 +194,20 @@ export class WalletService {
     amount: number,
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`💼 Investing ${amount} CLPD for user ${user.address} on chain ${chain}.`);
+    console.log(`💼 Invirtiendo ${amount} CLPD`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, mediator, contractService } = this.getChainServices(chain);
     const balance = await contracts.clpd.getBalance(user.address);
-    console.log(`📊 Available CLPD balance: ${formatUnits(balance, 18)}`);
 
     if (balance < parseUnits(amount.toString(), 18)) {
-      console.error(`❌ Insufficient CLPD balance: available ${formatUnits(balance, 18)}`);
       throw new Error(`Insufficient CLPD balance: available ${formatUnits(balance, 18)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const result = await mediator.executeLiquidityAdditionWithApproval({
       token: contracts.clpd,
@@ -260,13 +215,12 @@ export class WalletService {
       signer,
       isClpd: true
     });
-    console.log(`✅ Investment executed with hash: ${result.hash}`);
 
     if (!result.success) {
-      console.error("❌ The investment has failed.");
       throw new Error("Investment failed");
     }
 
+    console.log(`✅ Inversión completada: ${result.hash}`);
     return result.hash;
   }
 
@@ -275,29 +229,20 @@ export class WalletService {
     amount: number,
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`💼 Investing ${amount} USDC for user ${user.address} on chain ${chain}.`);
+    console.log(`💼 Invirtiendo ${amount} USDC`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, mediator, contractService } = this.getChainServices(chain);
     const balance = await contracts.usdc.getBalance(user.address);
-    console.log(`📊 Available USDC balance: ${formatUnits(balance, 6)}`);
 
     if (balance < parseUnits(amount.toString(), 6)) {
-      console.error(`❌ Insufficient USDC balance: available ${formatUnits(balance, 6)}`);
       throw new Error(`Insufficient USDC balance: available ${formatUnits(balance, 6)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const result = await mediator.executeLiquidityAdditionWithApproval({
       token: contracts.usdc,
@@ -305,13 +250,12 @@ export class WalletService {
       signer,
       isClpd: false
     });
-    console.log(`✅ Investment executed with hash: ${result.hash}`);
 
     if (!result.success) {
-      console.error("❌ The investment has failed.");
       throw new Error("Investment failed");
     }
 
+    console.log(`✅ Inversión completada: ${result.hash}`);
     return result.hash;
   }
 
@@ -319,9 +263,8 @@ export class WalletService {
     user: User,
     chain: ChainId = "base"
   ): Promise<{ amountCLPD: number; amountUSDC: number }> {
-    console.log(`📈 Retrieving positions for user ${user.address} on chain ${chain}.`);
+    console.log(`📊 Obteniendo posiciones para ${user.address}`);
     if (!user.address) {
-      console.error("❌ User address is undefined.");
       throw new Error("User address is undefined");
     }
 
@@ -331,7 +274,6 @@ export class WalletService {
       contracts.pool.getTotalSupply(),
       contracts.pool.getReserves()
     ]);
-    console.log("📊 Liquidity data obtained.");
 
     const amountCLPDWithDecimals = Math.round(
       (Number(liquidity) / Number(totalSupply)) * Number(reserves[0])
@@ -339,11 +281,10 @@ export class WalletService {
     const amountUSDCWithDecimals = Math.round(
       (Number(liquidity) / Number(totalSupply)) * Number(reserves[1])
     );
-    console.log("📉 Position calculations completed.");
 
     const formattedCLPD = Number(formatUnits(BigInt(amountCLPDWithDecimals), 18));
     const formattedUSDC = Number(formatUnits(BigInt(amountUSDCWithDecimals), 6));
-    console.log(`💼 Positions: ${formattedCLPD} CLPD, ${formattedUSDC} USDC.`);
+    console.log(`💼 Posiciones: ${formattedCLPD} CLPD, ${formattedUSDC} USDC`);
 
     return {
       amountCLPD: formattedCLPD,
@@ -357,12 +298,9 @@ export class WalletService {
     pendingAmounts: number[],
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`🪙 Starting token minting for pending users on chain ${chain}.`);
+    console.log(`🪙 Iniciando mint de tokens`);
     const { contracts, contractService } = this.getChainServices(chain);
-    console.log(`🔗 Contracts retrieved for chain ${chain}.`);
-
     const parsedAmounts = pendingAmounts.map(amount => parseUnits(amount.toString(), 18));
-    console.log("🔢 Pending amounts parsed.");
 
     const operation = new MintTokensOperation(
       contractService,
@@ -373,10 +311,9 @@ export class WalletService {
         agentSigner
       }
     );
-    console.log("🛠️ Token minting operation created.");
 
     const result = await contractService.executeOperation(operation);
-    console.log(`✅ Tokens minted with hash: ${result.hash}`);
+    console.log(`✅ Tokens minteados: ${result.hash}`);
     return result.hash;
   }
 
@@ -385,29 +322,20 @@ export class WalletService {
     amount: number,
     chain: ChainId = "base"
   ): Promise<string> {
-    console.log(`🔥 Initiating burn of ${amount} CLPD for user ${user.address} on chain ${chain}.`);
+    console.log(`🔥 Iniciando burn de ${amount} CLPD`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, contractService } = this.getChainServices(chain);
     const balance = await contracts.clpdToken.getBalance(user.address);
-    console.log(`📊 Available CLPD balance for burn: ${formatUnits(BigInt(balance), 18)}`);
 
     if (BigInt(balance) < parseUnits(amount.toString(), 18)) {
-      console.error(`❌ Insufficient CLPD balance: available ${formatUnits(BigInt(balance), 18)}`);
       throw new Error(`Insufficient CLPD balance: available ${formatUnits(BigInt(balance), 18)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const operation = new BurnTokensOperation(
       contractService,
@@ -418,10 +346,9 @@ export class WalletService {
         signer
       }
     );
-    console.log("🛠️ Token burn operation created.");
 
     const result = await contractService.executeOperation(operation);
-    console.log(`✅ Tokens burned with hash: ${result.hash}`);
+    console.log(`✅ Tokens quemados: ${result.hash}`);
     return result.hash;
   }
 
@@ -431,29 +358,20 @@ export class WalletService {
     sourceChain: ChainId,
     targetChain: ChainId
   ): Promise<string> {
-    console.log(`🌉 Initiating bridge of ${amount} CLPD from ${sourceChain} to ${targetChain} for user ${user.address}.`);
+    console.log(`🌉 Iniciando bridge de ${amount} CLPD: ${sourceChain} -> ${targetChain}`);
     if (!user.address || !user.internalPrivateKeys?.evmPrivateKey) {
-      console.error("❌ User address or private key is undefined.");
       throw new Error("User address or private key is undefined");
     }
 
     const { contracts, mediator, contractService } = this.getChainServices(sourceChain);
     const clpdBalance = await contracts.clpd.getBalance(user.address);
-    console.log(`📊 CLPD balance on ${sourceChain}: ${formatUnits(clpdBalance, 18)}`);
 
     if (clpdBalance < parseUnits(amount.toString(), 18)) {
-      console.error(`❌ Insufficient CLPD balance on ${sourceChain}: available ${formatUnits(clpdBalance, 18)}`);
       throw new Error(`Insufficient CLPD balance on ${sourceChain}: available ${formatUnits(clpdBalance, 18)}`);
     }
 
     const decryptedKey = this.cryptoService.decrypt(user.internalPrivateKeys.evmPrivateKey);
-    console.log("🔑 Private key decrypted.");
-
-    const signer = new ethers.Wallet(
-      decryptedKey,
-      contractService.jsonRpcProvider
-    );
-    console.log("👤 Signer created successfully.");
+    const signer = new ethers.Wallet(decryptedKey, contractService.jsonRpcProvider);
 
     const result = await mediator.executeCrossChainBridge({
       amount: parseUnits(amount.toString(), 18),
@@ -461,13 +379,12 @@ export class WalletService {
       targetChain,
       userSigner: signer
     });
-    console.log(`✅ Bridge executed with hash: ${result.hash}`);
 
     if (!result.success) {
-      console.error(`❌ The bridge process has failed on ${sourceChain}.`);
       throw new Error(`Bridge process failed on ${sourceChain}`);
     }
 
+    console.log(`✅ Bridge completado: ${result.hash}`);
     return result.hash;
   }
 }

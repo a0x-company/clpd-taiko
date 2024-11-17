@@ -34,11 +34,11 @@ export const addresses: {
     positionManageAddress: "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1",
     factoryAddress: "0x0000000000000000000000000000000000000000",
     CLPD: {
-      address: "0xb00C1946fFADE1Ddf40f9957E659bA3CCb8c843A",
+      address: "0xe2C6D205F0EF4A215B66B25437BbC5C8d59525FE",
       decimals: 18,
     },
     USDC: {
-      address: "0xcB0f68Cb1E6F4466F6970De9a3a70489Ee7D3a7A", // ERC20 Test
+      address: "0xcB0f68Cb1E6F4466F6970De9a3a70489Ee7D3a7A",
       decimals: 18,
     },
   },
@@ -48,7 +48,7 @@ export const addresses: {
     positionManageAddress: "0x0000000000000000000000000000000000000000",
     factoryAddress: "0x0000000000000000000000000000000000000000",
     CLPD: {
-      address: "0x380a3Af810aEC334c5CcDFa7Faa9c42Ba9559B8e",
+      address: "0x53c04d5FC9F8d5c4f3C45B4da6617868ECEaF636",
       decimals: 18,
     },
     USDC: {

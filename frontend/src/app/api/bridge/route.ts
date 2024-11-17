@@ -1,46 +1,44 @@
 import { NextResponse } from "next/server";
-import { AuthService, NetworkService, BridgeService } from "./services";
-import { formatEther } from "viem";
-export const maxDuration = 60;
+import { getSessionToken } from "@/lib/auth";
+import axios from "axios";
+
+const API_URL = process.env.API_URL;
+const API_KEY = process.env.API_KEY;
 
 export async function POST(request: Request) {
   try {
-    const bridgeRequest = await AuthService.validateAndDecryptRequest(request);
-    const networkService = NetworkService.getInstance();
-    const bridgeService = new BridgeService();
-    
-    // Inicializar provider
-    await networkService.getProvider(bridgeRequest.networkIn);
-    
-    // Verificar balance CLPD
-    const sourceContract = networkService.getContract(bridgeRequest.networkIn);
-    const balance = await sourceContract.balanceOf(bridgeRequest.userAddress);
-    console.log("💰 User CLPD balance in source network:", formatEther(balance));
+    const { amount, networkIn, networkOut } = await request.json();
+    const idToken = await getSessionToken();
 
-    if (bridgeRequest.amount > Number(formatEther(balance))) {
-      return NextResponse.json(
-        { error: "❌ Insufficient CLPD balance for bridge" },
-        { status: 400 }
-      );
+    if (!idToken) {
+      return NextResponse.json({ error: "❌ No autorizado" }, { status: 401 });
     }
 
-    // Ejecutar bridge
-    await bridgeService.executeBridge(
-      bridgeRequest.userAddress,
-      bridgeRequest.amount,
-      bridgeRequest.decryptedKey,
-      bridgeRequest.networkIn,
-      bridgeRequest.networkOut
+    const response = await axios.post(
+      `${API_URL}/wallet/bridge`,
+      {
+        amount,
+        sourceChain: networkIn === "baseSepolia" ? "base-sepolia" : "taiko-hekla-testnet",
+        targetChain: networkOut === "baseSepolia" ? "base-sepolia" : "taiko-hekla-testnet"
+      },
+      {
+        headers: {
+          "api-key": API_KEY,
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json"
+        }
+      }
     );
 
     return NextResponse.json(
-      { message: "✅ Bridge completed successfully" },
+      { message: "✅ Bridge completado exitosamente" },
       { status: 200 }
     );
+
   } catch (error) {
-    console.error("❌ Error processing bridge:", error);
+    console.error("❌ Error procesando bridge:", error);
     return NextResponse.json(
-      { error: "❌ Internal Server Error" },
+      { error: "❌ Error Interno del Servidor" },
       { status: 500 }
     );
   }

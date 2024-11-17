@@ -12,7 +12,9 @@
     "change": "Change",
     "logout": "Logout",
     "backToHome": "Back to Home",
-    "aboutCLPD": "About CLPD"
+    "aboutCLPD": "About CLPD",
+    "bridge": "Bridge"
+
   },
   "landing": {
     "send": "Send",

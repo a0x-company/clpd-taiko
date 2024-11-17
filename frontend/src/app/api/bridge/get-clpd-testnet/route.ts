@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
   try {
     const FAUCET_MAX_BALANCE = 100;
-    const FAUCET_AMOUNT = 10; // cantidad de CLPD a enviar
+    const FAUCET_AMOUNT = 10;
     const pkRechargeEthCldp = process.env.PK_RECHARGE_ETH_CLPD;
 
     if (!pkRechargeEthCldp) {

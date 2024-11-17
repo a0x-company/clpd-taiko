@@ -12,7 +12,8 @@
     "change": "Cambiar",
     "logout": "Cerrar sesión",
     "backToHome": "Volver a la página",
-    "aboutCLPD": "Sobre CLPD"
+    "aboutCLPD": "Sobre CLPD",
+    "bridge": "Bridge"
   },
   "landing": {
     "send": "Envías",
