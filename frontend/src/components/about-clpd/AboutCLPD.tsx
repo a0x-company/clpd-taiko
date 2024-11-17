@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { formatDateTime } from "@/lib/utils";
 import Link from "next/link";
 import { formatUnits } from "viem";
+import { LoadingSpinner } from "../ui/spinner";
 
 interface AboutCLPDProps {}
 
@@ -153,7 +154,7 @@ const TableToken = ({
   const itemsPerPage = 5;
 
   const allEvents = [...events.bridges, ...events.minted, ...events.burned].sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
   });
 
   const indexOfLastEvent = currentPage * itemsPerPage;
@@ -250,10 +251,11 @@ const TableToken = ({
 
 const AboutCLPD: React.FC<AboutCLPDProps> = () => {
   const [data, setData] = useState<Events | null>(null);
-
+  const [loading, setLoading] = useState(false);
   const fetchedData = useRef(false);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const response = await axios.get("/api/events");
       if (response.data) {
@@ -290,6 +292,8 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -326,6 +330,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
       <h1 className="text-white font-helvetica font-bold text-[40px] text-center">{t("events")}</h1>
 
       <div className="flex flex-col max-w-7xl w-full mx-auto p-6 content-center justify-center items-center gap-8 border-2 border-black shadow-brutalist rounded-xl bg-white">
+        {loading && <LoadingSpinner />}
         {data && <TableToken events={data} t={t} locale={locale} />}
       </div>
 
@@ -335,7 +340,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
           alt="Waves Vector"
           width={250}
           height={350}
-          className="absolute bottom-0 left-0 max-md:max-w-[100px] hidden md:block"
+          className="absolute bottom-0 left-0 max-md:max-w-[100px] hidden md:block -z-10"
         />
       </div>
 
@@ -344,7 +349,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
         alt="Waves Vector"
         width={600}
         height={350}
-        className="absolute -bottom-[175px] right-0 max-md:max-w-[300px]"
+        className="absolute -bottom-[175px] right-0 max-md:max-w-[300px] -z-10"
       />
     </section>
   );

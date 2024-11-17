@@ -9,7 +9,7 @@
     "deposit": "Deposit",
     "withdraw": "Withdraw",
     "invest": "Invest",
-    "change": "Change",
+    "change": "Swap",
     "logout": "Logout",
     "backToHome": "Back to Home",
     "aboutCLPD": "About CLPD",
@@ -389,6 +389,7 @@
     "stepPendingBridgeDescription": "The transfer is in progress.",
     "bridge": "Bridge",
     "submit": "Submit",
+    "bridged": "bridged",
     "actualBalance": "Actual balance",
     "newBalance": "New balance"
   }

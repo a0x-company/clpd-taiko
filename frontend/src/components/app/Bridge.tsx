@@ -224,7 +224,7 @@ const createSteps = ({
         )}
         {status === "success" && (
           <p className={cn("text-xl font-helvetica text-start text-black font-bold")}>
-            {t("stepSuccessBridgeDescription")} {amount} CLPD {t("to")}{" "}
+            {t("stepSuccessBridgeDescription")} {amount} CLPD {t("bridged")}{" "}
             {networkIn === "baseSepolia" ? "Taiko" : "Base"}
           </p>
         )}

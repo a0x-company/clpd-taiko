@@ -390,8 +390,8 @@
     "stepPendingBridgeDescription": "La transferencia está en proceso.",
     "submit": "Enviar",
     "bridge": "Enviar",
-    "to": "a",
     "actualBalance": "Saldo actual",
-    "newBalance": "Nuevo saldo"
+    "newBalance": "Nuevo saldo",
+    "bridged": "bridged"
   }
 }
