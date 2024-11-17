@@ -1,6 +1,6 @@
 "use client";
 // react
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // next
 import Image from "next/image";
@@ -266,17 +266,33 @@ const Bridge: React.FC = () => {
   const { user } = useUserStore();
   const userAddress = user?.address || zeroAddress
 
-   const { clpdBalanceFormatted, refetch: refetchCLPDBalance } = useCLPDBalance({
+  const { 
+    clpdBalanceFormatted, 
+    refetch: refetchCLPDBalance,
+    isLoading: isLoadingBase 
+  } = useCLPDBalance({
     address: userAddress,
     chainId: baseSepolia.id,
     _chainName: "baseSepolia",
   });
-  const { clpdBalanceFormatted: clpdBalanceFormattedTaiko, refetch: refetchCLPDBalanceTaiko } =
-    useCLPDBalance({
-      address: userAddress,
-      chainId: taikoHekla.id,
-      _chainName: "taikoHekla",
-    });
+
+  const { 
+    clpdBalanceFormatted: clpdBalanceFormattedTaiko, 
+    refetch: refetchCLPDBalanceTaiko,
+    isLoading: isLoadingTaiko 
+  } = useCLPDBalance({
+    address: userAddress,
+    chainId: taikoHekla.id,
+    _chainName: "taikoHekla",
+  });
+
+  useEffect(() => {
+    console.log("Bridge Component Balance Values:");
+      console.log("Base Balance:", clpdBalanceFormatted);
+      console.log("Taiko Balance:", clpdBalanceFormattedTaiko);
+      console.log("Loading Base:", isLoadingBase);
+      console.log("Loading Taiko:", isLoadingTaiko);
+  }, [clpdBalanceFormatted, clpdBalanceFormattedTaiko]);
 
   const [status, setStatus] = useState<"pending" | "success">("pending");
 
