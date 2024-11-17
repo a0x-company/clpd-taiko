@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // next
 import Image from "next/image";
@@ -141,6 +141,19 @@ interface Events {
 const hrefBaseScan = "https://basescan.org/tx/";
 const hrefTaikoScan = "https://hekla.taikoscan.io/tx/";
 
+const usePagination = (items: any[], itemsPerPage: number) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastEvent = currentPage * itemsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
+  const currentEvents = items.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  return { currentPage, currentEvents, totalPages, handlePageChange };
+};
+
 const TableToken = ({
   events,
   t,
@@ -150,22 +163,19 @@ const TableToken = ({
   t: (key: string) => string;
   locale: string;
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const allEvents = [...events.bridges, ...events.minted, ...events.burned].sort((a, b) => {
-    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-  });
+  const allEvents = useMemo(() => {
+    const combinedEvents = [...events.bridges, ...events.minted, ...events.burned].sort((a, b) => {
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
+    return combinedEvents;
+  }, [events]);
 
-  const indexOfLastEvent = currentPage * itemsPerPage;
-  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
-  const currentEvents = allEvents.slice(indexOfFirstEvent, indexOfLastEvent);
-
-  const totalPages = Math.ceil(allEvents.length / itemsPerPage);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const { currentPage, currentEvents, totalPages, handlePageChange } = usePagination(
+    allEvents,
+    itemsPerPage
+  );
 
   return (
     <>
@@ -181,7 +191,7 @@ const TableToken = ({
         </TableHeader>
         <TableBody className="w-full h-full items-center">
           {currentEvents.map((event) => (
-            <TableRow key={event.id} className="border-b-0">
+            <TableRow key={`${event.id}-${event.type}-${event.chain}`} className="border-b-0">
               <Link
                 href={
                   event.chain === "baseSepolia"
@@ -288,7 +298,11 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
           formattedData.burned.push({ ...event, chain: "baseSepolia", type: "burn" });
         });
 
-        setData(formattedData);
+        if (!fetchedData.current) {
+          console.log("setting data");
+          setData(formattedData);
+          fetchedData.current = true;
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -300,7 +314,6 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
   useEffect(() => {
     if (!fetchedData.current) {
       fetchData();
-      fetchedData.current = true;
     }
   }, []);
 
@@ -329,7 +342,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
 
       <h1 className="text-white font-helvetica font-bold text-[40px] text-center">{t("events")}</h1>
 
-      <div className="flex flex-col max-w-7xl w-full mx-auto p-6 content-center justify-center items-center gap-8 border-2 border-black shadow-brutalist rounded-xl bg-white">
+      <div className="flex flex-col max-w-7xl w-full mx-auto p-6 content-center justify-center items-center gap-8 border-2 border-black shadow-brutalist rounded-xl bg-white z-10">
         {loading && <LoadingSpinner />}
         {data && <TableToken events={data} t={t} locale={locale} />}
       </div>
@@ -340,7 +353,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
           alt="Waves Vector"
           width={250}
           height={350}
-          className="absolute bottom-0 left-0 max-md:max-w-[100px] hidden md:block -z-10"
+          className="absolute bottom-0 left-0 max-md:max-w-[100px] hidden md:block"
         />
       </div>
 
@@ -349,7 +362,7 @@ const AboutCLPD: React.FC<AboutCLPDProps> = () => {
         alt="Waves Vector"
         width={600}
         height={350}
-        className="absolute -bottom-[175px] right-0 max-md:max-w-[300px] -z-10"
+        className="absolute -bottom-[175px] right-0 max-md:max-w-[300px]"
       />
     </section>
   );
