@@ -217,34 +217,24 @@ const createSteps = ({
           className="mx-auto"
           unoptimized
         />
+        {status === "pending" && (
+          <p className={cn("text-xl font-helvetica font-light text-start text-white")}>
+            {t("stepPendingBridgeDescription")}
+          </p>
+        )}
+        {status === "success" && (
+          <p className={cn("text-xl font-helvetica text-start text-black font-bold")}>
+            {t("stepSuccessBridgeDescription")} {amount} CLPD {t("to")}{" "}
+            {networkIn === "baseSepolia" ? "Taiko" : "Base"}
+          </p>
+        )}
         <p
           className={cn(
             "text-xl font-helvetica font-light text-start text-white",
             status === "success" && "font-bold text-black"
           )}
         >
-          {status === "success"
-            ? t("stepSuccessBridgeDescription")
-            : t("stepPendingBridgeDescription")}
-        </p>
-        <p
-          className={cn(
-            "text-xl font-helvetica font-light text-start text-white",
-            status === "success" && "font-bold text-black"
-          )}
-        >
-          {status === "success" &&
-            `You have successfully bridged ${amount} CLPD to ${
-              networkIn === "baseSepolia" ? "Taiko" : "Base"
-            }`}
-        </p>
-        <p
-          className={cn(
-            "text-xl font-helvetica font-light text-start text-white",
-            status === "success" && "font-bold text-black"
-          )}
-        >
-          New Balance:
+          {status === "success" ? t("newBalance") : t("actualBalance")}:
           <br />
           Base: {clpdBalanceFormatted}
           <br />
@@ -264,22 +254,22 @@ const Bridge: React.FC = () => {
   const [errorFields, setErrorFields] = useState<string[]>([]);
 
   const { user } = useUserStore();
-  const userAddress = user?.address || zeroAddress
+  const userAddress = user?.address || zeroAddress;
 
-  const { 
-    clpdBalanceFormatted, 
+  const {
+    clpdBalanceFormatted,
     refetch: refetchCLPDBalance,
-    isLoading: isLoadingBase 
+    isLoading: isLoadingBase,
   } = useCLPDBalance({
     address: userAddress,
     chainId: baseSepolia.id,
     _chainName: "baseSepolia",
   });
 
-  const { 
-    clpdBalanceFormatted: clpdBalanceFormattedTaiko, 
+  const {
+    clpdBalanceFormatted: clpdBalanceFormattedTaiko,
     refetch: refetchCLPDBalanceTaiko,
-    isLoading: isLoadingTaiko 
+    isLoading: isLoadingTaiko,
   } = useCLPDBalance({
     address: userAddress,
     chainId: taikoHekla.id,
@@ -288,10 +278,10 @@ const Bridge: React.FC = () => {
 
   useEffect(() => {
     console.log("Bridge Component Balance Values:");
-      console.log("Base Balance:", clpdBalanceFormatted);
-      console.log("Taiko Balance:", clpdBalanceFormattedTaiko);
-      console.log("Loading Base:", isLoadingBase);
-      console.log("Loading Taiko:", isLoadingTaiko);
+    console.log("Base Balance:", clpdBalanceFormatted);
+    console.log("Taiko Balance:", clpdBalanceFormattedTaiko);
+    console.log("Loading Base:", isLoadingBase);
+    console.log("Loading Taiko:", isLoadingTaiko);
   }, [clpdBalanceFormatted, clpdBalanceFormattedTaiko]);
 
   const [status, setStatus] = useState<"pending" | "success">("pending");

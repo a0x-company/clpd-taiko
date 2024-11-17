@@ -14,7 +14,6 @@
     "backToHome": "Back to Home",
     "aboutCLPD": "About CLPD",
     "bridge": "Bridge"
-
   },
   "landing": {
     "send": "Send",
@@ -389,6 +388,8 @@
     "stepSuccessBridgeDescription": "The transfer has been completed successfully.",
     "stepPendingBridgeDescription": "The transfer is in progress.",
     "bridge": "Bridge",
-    "submit": "Submit"
+    "submit": "Submit",
+    "actualBalance": "Actual balance",
+    "newBalance": "New balance"
   }
 }

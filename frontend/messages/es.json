@@ -389,6 +389,9 @@
     "stepSuccessBridgeDescription": "La transferencia se ha completado con éxito.",
     "stepPendingBridgeDescription": "La transferencia está en proceso.",
     "submit": "Enviar",
-    "bridge": "Enviar"
+    "bridge": "Enviar",
+    "to": "a",
+    "actualBalance": "Saldo actual",
+    "newBalance": "Nuevo saldo"
   }
 }
